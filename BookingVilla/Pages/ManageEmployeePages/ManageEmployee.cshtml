@@ -1,0 +1,199 @@
+﻿@page
+@model BookingVilla.Pages.ManageEmployeePages.ManageEmployeeModel
+@inject Microsoft.AspNetCore.Mvc.Rendering.IHtmlHelper HtmlHelper
+@{
+    Layout = null;
+    var currentPage = ViewContext.RouteData.Values["page"] as string;
+}
+@using DataAccess;
+@inject EmployeeDAO EmployeeDAO
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Admin Dashboard</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700,200" rel="stylesheet" />
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+
+    <!-- Bootstrap -->
+    <link href="~/css/bootstrap.min.css" rel="stylesheet" />
+
+    <!-- Custom Styles -->
+    <link href="~/css/light-bootstrap-dashboard.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/manager.css" />
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Scripts -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+        img {
+            width: 200px;
+            height: 120px;
+        }
+
+        select {
+            height: 25px;
+        }
+        .sidebar .sidebar-wrapper {
+            background: #353535;
+        }
+
+        .btn-info.btn-fill {
+            background: #353535;
+            border: none;
+        }
+
+            .btn-info.btn-fill:hover {
+                background: gray;
+            }
+
+        .table-wrapper {
+            margin: 50px 20px 0 20px;
+        }
+
+        .modal-content {
+            margin: auto;
+            max-width: 500px;
+        }
+    </style>
+</head>
+<body>
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <script>
+            Swal.fire({
+                title: "@(TempData["SuccessMessage"]?.ToString() == "ok" ? "Update Status Success!" : "Update Status Fail!")",
+                icon: "@(TempData["SuccessMessage"]?.ToString() == "ok" ? "success" : "error")",
+                confirmButtonText: "OK"
+            });
+        </script>
+    }
+    <div class="wrapper">
+        <div class="sidebar" data-image="~/img/sidebar-5.jpg">
+            <div class="sidebar-wrapper" style="background-color: #353535">
+                <div class="logo">
+                    <a href="#" class="simple-text">Admin Dashboard</a>
+                </div>
+                <ul class="nav">
+                    <li class="nav-item @(currentPage == "/ManageVillaPages/ManageVilla" ? "active" : "")">
+                        <a class="nav-link" asp-page="/ManageVillaPages/ManageVilla">
+                            <i class="fa-solid fa-house"></i>
+                            <p>Manager Villa</p>
+                        </a>
+                    </li>
+                    <li class="nav-item @(currentPage == "/ManageAccountPages/ManageAccount" ? "active" : "")">
+                        <a class="nav-link" asp-page="/ManageAccountPages/ManageAccount">
+                            <i class="fa-solid fa-user"></i>
+                            <p>Manager Account</p>
+                        </a>
+                    </li>
+                    <li class="nav-item @(currentPage == "/ManageEmployeePages/ManageEmployee" ? "active" : "")">
+                        <a class="nav-link" asp-page="/ManageEmployeePages/ManageEmployee">
+                            <i class="fa-solid fa-users"></i>
+                            <p>Manager Employee</p>
+                        </a>
+                    </li>
+                    <li class="nav-item @(currentPage == "/ManageServicePages/ManageService" ? "active" : "")">
+                        <a class="nav-link" asp-page="/ManageServicePages/ManageService">
+                            <i class="fa-solid fa-address-book"></i>
+                            <p>Manager Service</p>
+                        </a>
+                    </li>
+                    <li class="nav-item @(currentPage == "/RevenuePages/ManageRevenue" ? "active" : "")">
+                        <a class="nav-link" asp-page="/RevenuePages/ManageRevenue">
+                            <i class="fa-solid fa-money-bill"></i>
+                            <p>View Revenue</p>
+                        </a>
+                    </li>
+                    <li class="nav-item active active-pro"><a class="nav-link active" asp-page="/Index"><i class="fa-solid fa-house"></i><p>Home Page</p></a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="main-panel">
+            <div class="table-wrapper">
+                <div class="table-title">
+                    <div class="row">
+                        <div class="col-sm-6"><h2>Manage <b>Employee</b></h2></div>
+                        <div class="col-sm-6">
+                            <form method="post">
+                                <input type="search" required name="search" value="@Model.Search" placeholder="Search...">
+                                <input style="color:black" type="submit" value="Search">
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Address</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Salary</th>
+                            <th>Avatar</th>
+                            <th>Status Role</th>
+                            <th>Edit Role Role</th>
+                            <th>Edit</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var s in Model.Employees)
+                        {
+                            var status = EmployeeDAO.CheckStatusEmployee(s.IdEmployee);
+                            <tr>
+                                <td>@s.IdEmployee</td>
+                                <td class="fixed-width">@s.Name</td>
+                                <td class="fixed-width">@s.Address</td>
+                                <td class="fixed-width">@s.Email</td>
+                                <td>@s.Phone</td>
+                                <td>@s.Salary.ToString("F0")</td>
+                                <td class="fixed-width"><img src="/img/@s.Avatar" alt="Employee Avatar" style="width: 100%" /></td>
+                                <td>@(status ? "Normal" : "Ban")</td>
+                                <td style="white-space: nowrap">
+                                    <a asp-page="/ManageEmployeePages/BanEmployee" asp-route-id="@s.IdEmployee" asp-route-status="unban">Unban</a> |
+                                    <a asp-page="/ManageEmployeePages/BanEmployee" asp-route-id="@s.IdEmployee" asp-route-status="ban">Ban</a>
+                                </td>
+                                <td><a asp-page="/UpdateEmployee" asp-route-id="@s.IdEmployee">Update</a></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.delete-link').forEach(link => {
+                link.addEventListener('click', event => {
+                    event.preventDefault();
+                    Swal.fire({
+                        title: 'Are You Sure?',
+                        text: 'Do you really want to delete this villa?',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonText: 'Yes, delete it!'
+                    }).then(result => {
+                        if (result.isConfirmed) {
+                            window.location.href = `/Admin/DeleteVilla?id=${link.dataset.villaId}&list=${link.dataset.choice}`;
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>
+
