@@ -1,0 +1,240 @@
+﻿@page
+@model BookingVilla.Pages.ManageAccountPages.ManageAccountModel
+@inject Microsoft.AspNetCore.Mvc.Rendering.IHtmlHelper HtmlHelper
+@{
+    Layout = null;
+    var currentPage = ViewContext.RouteData.Values["page"] as string;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Admin Dashboard</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700,200" rel="stylesheet" />
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+
+    <!-- Bootstrap -->
+    <link href="~/css/bootstrap.min.css" rel="stylesheet" />
+
+    <!-- Custom Styles -->
+    <link href="~/css/light-bootstrap-dashboard.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/manager.css" />
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Scripts -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+        img {
+            width: 200px;
+            height: 120px;
+        }
+
+        select {
+            height: 25px;
+        }
+
+        <style >
+        .sidebar .sidebar-wrapper {
+            background: #353535;
+        }
+
+        .btn-info.btn-fill {
+            background: #353535;
+            border: none;
+        }
+
+            .btn-info.btn-fill:hover {
+                background: gray;
+            }
+
+        .table-wrapper {
+            margin: 50px 20px 0 20px;
+        }
+
+        .modal-content {
+            margin: auto;
+            max-width: 500px;
+        }
+    </style>
+</head>
+<body>
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <script>
+            Swal.fire({
+                title: "@(TempData["SuccessMessage"]?.ToString() == "ok" ? "Update Role Success!" : "Update Role Fail!")",
+                icon: "@(TempData["SuccessMessage"]?.ToString() == "ok" ? "success" : "error")",
+                confirmButtonText: "OK"
+            });
+        </script>
+    }
+    @if (TempData["SuccessMessage1"] != null)
+    {
+        <script>
+            Swal.fire({
+                title: "@(TempData["SuccessMessage1"]?.ToString() == "ok" ? "Update Status Success!" : "Update Status Fail!")",
+                icon: "@(TempData["SuccessMessage1"]?.ToString() == "ok" ? "success" : "error")",
+                confirmButtonText: "OK"
+            });
+        </script>
+    }
+    <div class="wrapper">
+        <div class="sidebar" data-image="~/img/sidebar-5.jpg">
+            <div class="sidebar-wrapper" style="background-color: #353535">
+                <div class="logo">
+                    <a href="#" class="simple-text">Admin Dashboard</a>
+                </div>
+                <ul class="nav">
+                    <li class="nav-item @(currentPage == "/ManageVillaPages/ManageVilla" ? "active" : "")">
+                        <a class="nav-link" asp-page="/ManageVillaPages/ManageVilla">
+                            <i class="fa-solid fa-house"></i>
+                            <p>Manager Villa</p>
+                        </a>
+                    </li>
+                    <li class="nav-item @(currentPage == "/ManageAccountPages/ManageAccount" ? "active" : "")">
+                        <a class="nav-link" asp-page="/ManageAccountPages/ManageAccount">
+                            <i class="fa-solid fa-user"></i>
+                            <p>Manager Account</p>
+                        </a>
+                    </li>
+                    <li class="nav-item @(currentPage == "/ManageEmployeePages/ManageEmployee" ? "active" : "")">
+                        <a class="nav-link" asp-page="/ManageEmployeePages/ManageEmployee">
+                            <i class="fa-solid fa-users"></i>
+                            <p>Manager Employee</p>
+                        </a>
+                    </li>
+                    <li class="nav-item @(currentPage == "/ManageServicePages/ManageService" ? "active" : "")">
+                        <a class="nav-link" asp-page="/ManageServicePages/ManageService">
+                            <i class="fa-solid fa-address-book"></i>
+                            <p>Manager Service</p>
+                        </a>
+                    </li>
+                    <li class="nav-item @(currentPage == "/RevenuePages/ManageRevenue" ? "active" : "")">
+                        <a class="nav-link" asp-page="/RevenuePages/ManageRevenue">
+                            <i class="fa-solid fa-money-bill"></i>
+                            <p>View Revenue</p>
+                        </a>
+                    </li>
+                    <li class="nav-item active active-pro"><a class="nav-link active" asp-page="/Index"><i class="fa-solid fa-house"></i><p>Home Page</p></a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="main-panel">
+            <div class="table-wrapper">
+                <div class="table-title">
+                    <div class="row">
+                        <div class="col-sm-6"><h2>Manage <b>Account</b></h2></div>
+                        <div class="col-sm-6">
+                            <form method="post">
+                                <input type="search" required name="search" value="@Model.Search" placeholder="Search...">
+                                <input style="color:black" type="submit" value="Search">
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>UserName</th>
+                            <th>Password</th>
+                            <th>Role</th>
+                            <th>Status</th>
+                            <th style="text-align:center !important">Update Role</th>
+                            <th style="text-align:center !important">Update Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var account in Model.AccountList)
+                        {
+                            <tr>
+                                <td>@account.IdAccount</td>
+                                <td>@account.UserName</td>
+                                <td>@account.PassWord</td>
+                                <td>
+                                    @{
+                                        string roleDisplay = account.Role switch
+                                        {
+                                            "ad" => "Admin",
+                                            "emp" => "Employee",
+                                            "us" => "User",
+                                            _ => "Unknown" // Trường hợp Role không khớp với các giá trị trên
+                                        };
+                                    }
+                                    @roleDisplay
+                                </td>
+
+                                <td>@(account.Status ? "Normal" : "Ban")</td>
+                                <td style="text-align:center">
+                                    <a asp-page="/ManageAccountPages/UpdateRoleAccount" asp-route-id="@account.IdAccount" asp-route-role="emp">Employee</a> |
+                                    <a asp-page="/ManageAccountPages/UpdateRoleAccount" asp-route-id="@account.IdAccount" asp-route-role="us">User</a> |
+                                    <a asp-page="/ManageAccountPages/UpdateRoleAccount" asp-route-id="@account.IdAccount" asp-route-role="ad">Admin</a>
+                                </td>
+                                <td style="width: 8%; text-align:center">
+                                    <a asp-page="/ManageAccountPages/BanAccount" asp-route-id="@account.IdAccount" asp-route-status="unban">Unban</a> |
+                                    <a asp-page="/ManageAccountPages/BanAccount" asp-route-id="@account.IdAccount" asp-route-status="ban">Ban</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                <div class="clearfix">
+                    <div class="hint-text">Showing <b>12</b> out of <b>@Model.TotalAccounts</b> entries</div>
+                    <ul class="pagination">
+                        @if (Convert.ToInt32(Model.Index) > 1)
+                        {
+                            <li class="page-item"><a asp-page="ManageAccount" asp-route-index="@(Convert.ToInt32(Model.Index) - 1)">Previous</a></li>
+                        }
+
+                        @for (int i = 1; i <= Convert.ToInt32(Model.NumberPage); i++)
+                        {
+                            <li class="page-item @(Convert.ToInt32(Model.Index) == i ? "active" : "")">
+                                <a asp-page="ManageAccount" asp-route-index="@i" class="page-link">@i</a>
+                            </li>
+                        }
+
+                        @if (Convert.ToInt32(Model.Index) < Convert.ToInt32(Model.NumberPage))
+                        {
+                            <li class="page-item"><a asp-page="ManageAccount" asp-route-index="@(Convert.ToInt32(Model.Index) + 1)" class="page-link">Next</a></li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.delete-link').forEach(link => {
+                link.addEventListener('click', event => {
+                    event.preventDefault();
+                    Swal.fire({
+                        title: 'Are You Sure?',
+                        text: 'Do you really want to delete this villa?',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonText: 'Yes, delete it!'
+                    }).then(result => {
+                        if (result.isConfirmed) {
+                            window.location.href = `/Admin/DeleteVilla?id=${link.dataset.villaId}&list=${link.dataset.choice}`;
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>
+
+
