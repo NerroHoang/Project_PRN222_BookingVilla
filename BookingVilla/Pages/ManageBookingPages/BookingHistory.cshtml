@@ -1,0 +1,251 @@
+﻿@page
+@model BookingVilla.Pages.ManageBookingPages.BookingHistoryModel
+@{
+    Layout = null;
+}
+<title>Booking History</title>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link href="~/css/bootstrap.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="~/css/manager.css" />
+<style>
+    /* Your existing styles */
+    td span {
+        cursor: pointer;
+    }
+
+        td span:hover {
+            color: blue;
+        }
+
+    .breadcrumb-option {
+        padding-top: 35px;
+    }
+
+    .breadcrumb__links a {
+        font-size: 15px;
+        font-weight: 500;
+        color: #111111;
+        margin-right: 18px;
+        display: inline-block;
+        position: relative;
+    }
+
+        .breadcrumb__links a:after {
+            position: absolute;
+            right: -14px;
+            top: 0;
+            content: "";
+            font-family: "FontAwesome";
+        }
+
+        .breadcrumb__links a i {
+            margin-right: 5px;
+        }
+
+    .breadcrumb__links span {
+        font-size: 15px;
+        font-weight: 500;
+        color: #888888;
+        display: inline-block;
+    }
+
+    #theForm {
+        display: none;
+    }
+
+    .cancel-button {
+        background-color: gray;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        cursor: pointer;
+        opacity: 1;
+        transition: opacity 0.3s;
+        border-radius: 14px;
+    }
+
+        .cancel-button.disabled {
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+    .tag-a {
+        color: black;
+    }
+</style>
+<!-- Breadcrumb Begin -->
+<div class="breadcrumb-option">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="breadcrumb__links">
+                    <a asp-page="/Index"><i class="fa fa-home"></i> Home</a>
+                    <span>Your booking</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Breadcrumb End -->
+
+<div class="container">
+    <h1 class="mt-4 mb-4">Room Booking History</h1>
+    <a class="tag-a" asp-page="/ManageBookingPages/CanceledBooking">Booking Canceled</a>
+    <table class="table">
+        <thead>
+            <tr>
+                <th style="width: 200px">Room Name</th>
+                <th style="width: 190px">Check-in</th>
+                <th style="width: 190px">Check-out</th>
+                <th style="width: 120px">People</th>
+                <th style="width: 270px">Services Included</th>
+                <th style="width: 180px">Booking Price</th>
+                @if (Model.BookingHistoryList.Any(b => string.IsNullOrEmpty(b.Status) || b.Status == "Rejected"))
+                {
+                    <th></th>
+                }
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var booking in Model.BookingHistoryList)
+            {
+                <tr>
+                    <td>@booking.NameVilla</td>
+                    <td>@booking.CheckinDate.ToString("dd-MM-yyyy")</td>
+                    <td>@booking.CheckoutDate.ToString("dd-MM-yyyy")</td>
+                    <td>@booking.AmountOfPeople</td>
+                    <td style="width: 260px">
+                        @if (booking.ServicesIncluded != null && booking.ServicesIncluded.Any())
+                        {
+                            @Html.Raw(string.Join("<br>", booking.ServicesIncluded))
+                        }
+                        else
+                        {
+                            <span>No Services</span>
+                        }
+                    </td>
+                    <td class="booking-price">@($"{booking.PriceBooking:N0} vnd")</td>
+                    @if (string.IsNullOrEmpty(booking.Status) || booking.Status == "Rejected")
+                    {
+                        <td>
+                            <button class="cancel-button"
+                                    data-status="@booking.Status"
+                                    data-booking-id="@booking.IdBookingOnline"
+                                    data-checkin-date="@booking.CheckinDate.ToString("dd-MM-yyyy")">
+                                Cancel Booking
+                            </button>
+                        </td>
+                    }
+                    <td style="white-space: normal; max-width: 200px; vertical-align: middle">
+                        @switch (booking.Status)
+                        {
+                            case "Rejected":
+                                <span style="color: red; font-size: larger;">@booking.Status</span>
+                                break;
+                            case "Pending":
+                                <span style="color: #FFCC00; font-size: larger;">@booking.Status</span>
+                                break;
+                            case "Approved":
+                                <span style="color: green; font-size: larger;">@booking.Status</span>
+                                break;
+                            default:
+                                <span>@booking.Status</span>
+                                break;
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <div class="clearfix">
+        <div class="hint-text">Showing <b>12</b> out of <b>@Model.TotalAccounts</b> entries</div>
+        <ul class="pagination">
+            @if (Convert.ToInt32(Model.Index) > 1)
+            {
+                <li class="page-item"><a asp-page="BookingHistory" asp-route-index="@(Convert.ToInt32(Model.Index) - 1)">Previous</a></li>
+            }
+
+            @for (int i = 1; i <= Convert.ToInt32(Model.NumberPage); i++)
+            {
+                <li class="page-item @(Convert.ToInt32(Model.Index) == i ? "active" : "")">
+                    <a asp-page="BookingHistory" asp-route-index="@i" class="page-link">@i</a>
+                </li>
+            }
+
+            @if (Convert.ToInt32(Model.Index) < Convert.ToInt32(Model.NumberPage))
+            {
+                <li class="page-item"><a asp-page="BookingHistory" asp-route-index="@(Convert.ToInt32(Model.Index) + 1)" class="page-link">Next</a></li>
+            }
+        </ul>
+    </div>
+</div>
+<script>
+        document.addEventListener('DOMContentLoaded', () => {
+        const cancelButtons = document.querySelectorAll('.cancel-button');
+
+        function parseDate(checkinDate) {
+            const parts = checkinDate.split("-");
+            if (parts.length === 3) {
+                return new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
+            }
+            return new Date(checkinDate);
+        }
+
+        cancelButtons.forEach(cancelButton => {
+            const checkinDate = cancelButton.getAttribute('data-checkin-date');
+            const status = cancelButton.getAttribute('data-status');
+            const bookingId = cancelButton.getAttribute('data-booking-id');
+            const checkin = parseDate(checkinDate);
+            if (isNaN(checkin)) {
+                return;
+            }
+            const currentDate = new Date();
+            currentDate.setHours(0, 0, 0, 0);
+            checkin.setHours(0, 0, 0, 0);
+
+            const timeDifference = checkin - currentDate;
+            const dayDifference = timeDifference / (1000 * 3600 * 24);
+            if (dayDifference > 1 && (!status || status.trim() === "")) {
+                cancelButton.addEventListener('click', () => {
+                    Swal.fire({
+                        title: 'Are You Sure?',
+                        text: "You will only receive a 70% refund. Are you sure you want to cancel this booking?",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Yes, cancel it!'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            fetch(`/ManageBookingPages/BookingHistory?handler=CancelBooking&bookingId=${bookingId}`)
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.success) {
+                                        Swal.fire('Success', 'Your cancel request has been submitted and is awaiting approval.', 'success')
+                                            .then(() => window.location.reload());
+                                    } else {
+                                        Swal.fire('Error', 'Failed to submit cancel request.', 'error')
+                                            .then(() => window.location.reload());
+                                    }
+                                })
+                                .catch(() => {
+                                    Swal.fire('Error', 'Server error.', 'error')
+                                        .then(() => window.location.reload());
+                                });
+                        }
+                    });
+                });
+            } else {
+                cancelButton.classList.add('disabled');
+                cancelButton.disabled = true;
+                cancelButton.style.backgroundColor = '#AAAAAA';
+                cancelButton.style.color = 'white';
+            }
+        });
+    });
+
+</script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+

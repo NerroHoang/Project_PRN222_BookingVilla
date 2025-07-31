@@ -1,0 +1,140 @@
+﻿@page
+@model BookingVilla.Pages.ManageBookingPages.CanceledBookingModel
+@{
+    ViewData["Title"] = "Canceled Booking";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        td span {
+            cursor: pointer;
+        }
+        td span:hover {
+            color: blue;
+        }
+        .breadcrumb-option {
+            padding-top: 35px;
+        }
+        .breadcrumb__links a {
+            font-size: 15px;
+            font-weight: 500;
+            color: #111111;
+            margin-right: 18px;
+            display: inline-block;
+            position: relative;
+        }
+        .breadcrumb__links a:after {
+            position: absolute;
+            right: -14px;
+            top: 0;
+            content: "\f105";
+            font-family: "FontAwesome";
+        }
+        .breadcrumb__links a i {
+            margin-right: 5px;
+        }
+        .breadcrumb__links span {
+            font-size: 15px;
+            font-weight: 500;
+            color: #888888;
+            display: inline-block;
+        }
+        .buttontaga {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            color: white;
+            background-color: grey;
+            border: none;
+            border-radius: 5px;
+            text-align: center;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+        a {
+            text-decoration: none;
+        }
+        a:hover {
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div class="breadcrumb-option">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="breadcrumb__links">
+                        <a asp-page="/Index"><i class="fa fa-home"></i> Home</a>
+                        <span>Your canceled booking</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h1 class="mt-4 mb-4">Cancel Booking</h1>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th style="width: 200px">Room Name</th>
+                    <th style="width: 190px">Check-in</th>
+                    <th style="width: 190px">Check-out</th>
+                    <th style="width: 120px">People</th>
+                    <th style="width: 270px">Services Included</th>
+                    <th style="width: 180px">Booking Price</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var bkhtr in Model.BookingHistoryList)
+                {
+                    <tr>
+                        <td>@bkhtr.NameVilla</td>
+                        <td>@bkhtr.CheckinDate.ToString("yyyy-MM-dd")</td>
+                        <td>@bkhtr.CheckoutDate.ToString("yyyy-MM-dd")</td>
+                        <td>@bkhtr.AmountOfPeople</td>
+                        <td style="width: 260px">
+                            @foreach (var service in bkhtr.ServicesIncluded)
+                            {
+                                <span>@service</span><br />
+                            }
+                        </td>
+                        <td>$@bkhtr.PriceBooking</td>
+                        <td>
+                            @if (bkhtr.Status == "Rejected")
+                            {
+                                <span style="color: red; font-size: larger;">@bkhtr.Status</span>
+                            }
+                            else if (bkhtr.Status == "Pending")
+                            {
+                                <span style="color: #FFCC00; font-size: larger;">@bkhtr.Status</span>
+                            }
+                            else if (bkhtr.Status == "Approved")
+                            {
+                                <span style="color: green; font-size: larger;">@bkhtr.Status</span>
+                            }
+                            else
+                            {
+                                <span>@bkhtr.Status</span>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <a class="buttontaga" asp-page="/ManageBookingPages/BookingHistory">Back</a>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</body>
+</html>
+
