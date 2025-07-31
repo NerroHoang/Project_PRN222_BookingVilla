@@ -1,0 +1,68 @@
+﻿@page
+@model BookingVilla.Pages.Auth.RegisterModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Register</title>
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="~/css/loginForm.css" />
+</head>
+<body>
+    <section class="ftco-section">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-6 text-center mb-5">
+                    <h2 class="heading-section">Register</h2>
+                </div>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-md-7 col-lg-5">
+                    <div class="wrap">
+                        <h3 style="text-align: center; color: red">@TempData["Error"]</h3>
+                        <div class="login-wrap p-4 p-md-5">
+                            <h3 class="mb-4 text-center">Create an Account</h3>
+                            <form method="post">
+                                <div class="form-group mt-3">
+                                    <input asp-for="Username" class="form-control" required />
+                                    <label class="form-control-placeholder" for="Username">Username</label>
+                                </div>
+                                <div class="form-group mt-3">
+                                    <input asp-for="Name" class="form-control" required />
+                                    <label class="form-control-placeholder" for="Name">Full Name</label>
+                                </div>
+                                <div class="form-group mt-3">
+                                    <input asp-for="Email" type="email" class="form-control" required />
+                                    <label class="form-control-placeholder" for="Email">Email</label>
+                                </div>
+                                <div class="form-group mt-3">
+                                    <input asp-for="Phone" type="tel" class="form-control" required />
+                                    <label class="form-control-placeholder" for="Phone">Phone Number</label>
+                                </div>
+                                <div class="form-group">
+                                    <input asp-for="Password" type="password" class="form-control" required />
+                                    <label class="form-control-placeholder" for="Password">Password</label>
+                                </div>
+                                <div class="form-group">
+                                    <input asp-for="ConfirmPassword" type="password" class="form-control" required />
+                                    <label class="form-control-placeholder" for="ConfirmPassword">Confirm Password</label>
+                                </div>
+                                <div class="form-group">
+                                    <button type="submit" class="form-control btn btn-primary rounded submit px-3">Register</button>
+                                </div>
+                            </form>
+                            <p class="text-center">Already have an account? <a href="/Auth/Login">Sign In</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+</html>
