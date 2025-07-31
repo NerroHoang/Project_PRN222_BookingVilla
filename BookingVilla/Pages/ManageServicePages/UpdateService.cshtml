@@ -1,0 +1,117 @@
+﻿@page
+@model BookingVilla.Pages.ManageServicePages.UpdateServiceModel
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Update Information Service</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Cookie&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.7.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .modal-header {
+            background-color: #007bff;
+            color: white;
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+            text-align: center;
+        }
+
+        .modal-title {
+            font-weight: bold;
+        }
+
+        .modal-body {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .form-group label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .form-control {
+            padding: 8px;
+            width: 100%;
+        }
+
+        .modal-footer {
+            background-color: #f1f1f1;
+            padding: 10px;
+            text-align: right;
+            border-top: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .btn-default {
+            background-color: #ccc;
+            border: none;
+            padding: 8px 15px;
+        }
+
+        .btn-success {
+            background-color: #007bff;
+            border: none;
+            padding: 8px 15px;
+        }
+    </style>
+</head>
+<body>
+    <form method="post" enctype="multipart/form-data">
+        <div class="modal-header">
+            <h4 class="modal-title">Update Information Service</h4>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" name="id" value="@Model.Id" />
+            <div class="form-group">
+                <label>Name</label>
+                <input name="name" type="text" class="form-control" value="@Model.Name" required>
+            </div>
+            <div class="form-group">
+                <label>Description</label>
+                <input name="desc" class="form-control" value="@Model.Desc" required>
+            </div>
+            <div class="form-group">
+                <label>Price</label>
+                <input name="price" type="number" class="form-control" step="0.01" value="@Model.Price" required>
+            </div>
+            <div class="form-group">
+                <label>Image Service</label>
+                <img style="width: 50%;" src="/img/Service/@Model.Img" alt="@Model.Img">
+            </div>
+            <div class="form-group">
+                <label>New Image Service</label>
+                <input name="image" type="file" class="form-control">
+            </div>
+        </div>
+        <div class="modal-footer">
+            <input type="button" class="btn btn-default" value="Back" onclick="history.back()">
+            <input type="submit" class="btn btn-success" value="Update">
+        </div>
+    </form>
+</body>
+</html>
