@@ -1,0 +1,289 @@
+﻿@page
+@model BookingVilla.Pages.ManageBookingPages.BookingModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Resort Room Booking</title>
+    <link rel="stylesheet" href="~/css/bootstrap.min.css" />
+    <link href="~/css/bookingCss.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<style>
+    .card {
+        margin-right: 0;
+        border-radius: 12px;
+        width: 100%;
+        padding: 0 15px;
+    }
+
+    input {
+        border: none;
+        width: fit-content;
+    }
+
+    .info-button {
+        border: none;
+        background: none;
+        position: absolute;
+        right: 0;
+    }
+
+    .service-item {
+        position: relative; /* Ensure the container is positioned relatively */
+    }
+
+
+    .service-info {
+        display: none;
+        position: absolute;
+        top: 64%;
+        right: -48px;
+        width: 50%;
+        background-color: #f9f9f9;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        z-index: 1; /* Ensure it appears above other elements */
+        transition: all 0.3s ease;
+    }
+
+        .service-info.show {
+            display: block;
+        }
+
+        .service-info p {
+            margin: 0;
+            padding: 0;
+            font-size: 14px;
+            color: #333;
+            line-height: 1.6;
+        }
+
+
+
+
+    /*quantity*/
+    .qty-input {
+        color: #000;
+        background: #fff;
+        display: flex;
+        align-items: center;
+        overflow: hidden;
+        position: absolute;
+        right: 4rem;
+    }
+
+        .qty-input .product-qty,
+        .qty-input .qty-count {
+            background: transparent;
+            color: inherit;
+            font-size: inherit;
+            border: none;
+            display: inline-block;
+            min-width: 0;
+            height: 1.5rem;
+            line-height: 1;
+        }
+
+            .qty-input .product-qty:focus,
+            .qty-input .qty-count:focus {
+                outline: none;
+            }
+
+        .qty-input .product-qty {
+            width: 40px;
+            min-width: 0;
+            display: inline-block;
+            text-align: center;
+            -webkit-appearance: textfield;
+        }
+
+            .qty-input .product-qty::-webkit-outer-spin-button, .qty-input .product-qty::-webkit-inner-spin-button {
+                -webkit-appearance: none;
+                appearance: none;
+                margin: 0;
+            }
+
+        .qty-input .qty-count {
+            padding: 0;
+            cursor: pointer;
+            width: 50%;
+            font-size: 1.25em;
+            text-indent: -100px;
+            overflow: hidden;
+            position: relative;
+        }
+
+            .qty-input .qty-count:before, .qty-input .qty-count:after {
+                content: "";
+                height: 2px;
+                width: 10px;
+                position: absolute;
+                display: block;
+                background: #000;
+                top: 0;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                margin: auto;
+            }
+
+        .qty-input .qty-count--minus {
+            border-right: 1px solid #e2e2e2;
+        }
+
+        .qty-input .qty-count--add {
+            border-left: 1px solid #e2e2e2;
+        }
+
+            .qty-input .qty-count--add:after {
+                transform: rotate(90deg);
+            }
+
+        .qty-input .qty-count:disabled {
+            color: #ccc;
+            background: #f2f2f2;
+            cursor: not-allowed;
+            border-color: transparent;
+        }
+
+            .qty-input .qty-count:disabled:before, .qty-input .qty-count:disabled:after {
+                background: #ccc;
+            }
+
+    .qty-input {
+        border-radius: 4px;
+        box-shadow: 0 1em 2em -0.9em rgba(0, 0, 0, 0.7);
+        transform: scale(1.5);
+    }
+</style>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center">Book Your Room</h1>
+        <div class="row">
+            <div class="card col-md-12">
+                <div class="card-body">
+                    <h2 id="room-title">@Model.Villa.Name</h2>
+                    <p id="room-description">@Model.Villa.Describe</p>
+                    <h4>Base Price: <span id="base-price" data-price="@Model.PriceBase">@Math.Round(Model.PriceBase)</span> per day</h4>
+                    <div>
+                        <span>@Model.FromDate</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                        <span>@Model.ToDate</span>
+                    </div>
+                    <form id="booking-form" method="post">
+                        <div class="form-group">
+                            <label for="additional-services">Additional Services:</label>
+                            <div class="row">
+                                @{ int index = 1; } 
+                                 @foreach (var service in Model.ListService) 
+                                 { 
+                                     <div class="col col-6 px-2"> 
+                                         <div class="card"> 
+                                             <div class="form-check card-body service-item">
+                                                <img src="/img/Service/@service.Image" alt="@service.Image" class="service-image" />
+                                                <input class="form-check-input" type="checkbox" name="service_@service.IdService" value="@service.Price" /> 
+                                                 <label class="form-check-label">@service.Name (+@Math.Round(service.Price))</label> 
+                                                 <div class="qty-input"> 
+                                                     <button class="qty-count qty-count--minus" data-action="minus" type="button" data-index="@index">-</button> 
+                                                     <input class="product-qty" type="number" name="quantity_@service.IdService" id="quantity@index" min="1" value="@(service.IdService == 5 ? Model.NumOfPeople : 1)" /> 
+                                                     <button class="qty-count qty-count--add" data-action="add" type="button" data-index="@index">+</button> 
+                                                 </div> 
+                                                 <button class="info-button"> 
+                                                     <i class="fa-solid fa-circle-info"></i> 
+                                                 </button> 
+                                                 <div class="service-info"> 
+                                                     <p>@service.Describe</p> 
+                                                 </div> 
+                                             </div> 
+                                         </div> 
+                                     </div> 
+                                     index++; 
+                                 }
+                            </div>
+                        </div>
+                        <h4>Total Price: <input id="total-price" type="text" name="total" value="@Model.Price" readonly /></h4>
+                         <input type="hidden" name="idvilla" value="@Model.Villa.IdVilla" /> 
+                        <input type="hidden" name="fromDate" value="@Model.FromDate" />
+                        <input type="hidden" name="toDate" value="@Model.ToDate" />
+                        <input type="hidden" name="numofpeople" value="@Model.NumOfPeople" />
+                        <button type="button" onclick="history.back()" class="btn btn-danger" style="padding: 10px 20px;">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Book Now</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
+<script>
+        document.addEventListener("DOMContentLoaded", function () {
+        const buttons = document.querySelectorAll(".info-button");
+        buttons.forEach((button) => {
+            button.addEventListener("click", function (e) {
+                e.preventDefault();
+                const serviceInfo = this.nextElementSibling;
+                serviceInfo.classList.toggle("show");
+            });
+        });
+    });
+                    document.addEventListener("DOMContentLoaded", () => {
+        // Lấy giá trị total ban đầu từ input (chính là Model.Price)
+        const totalPriceElement = document.getElementById("total-price");
+        let originalTotalPrice = parseFloat(totalPriceElement.value.replace(/\./g, "")) || 0;
+        let currentTotalPrice = originalTotalPrice; // Giá trị tổng hiện tại
+
+        function updateTotalPrice() {
+            let totalPrice = originalTotalPrice; // Luôn reset về giá gốc (Model.Price)
+            const services = document.querySelectorAll('input[type="checkbox"]:checked');
+
+            if (services.length === 0) {
+                // Nếu không có service nào được chọn, giữ nguyên giá gốc
+                totalPriceElement.value = originalTotalPrice.toLocaleString('de-DE');
+                return;
+            }
+
+            services.forEach(service => {
+                const quantityInput = service.closest('.service-item').querySelector('.product-qty');
+                const quantity = quantityInput ? parseInt(quantityInput.value, 10) || 0 : 0;
+                totalPrice += parseFloat(service.value) * quantity;
+            });
+
+            currentTotalPrice = totalPrice; // Cập nhật giá trị hiện tại
+            totalPriceElement.value = totalPrice.toLocaleString('de-DE');
+        }
+
+        // Lắng nghe sự kiện thay đổi trên checkbox
+        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener("change", updateTotalPrice);
+        });
+
+        // Lắng nghe sự kiện nhấn nút tăng/giảm số lượng
+        document.querySelectorAll('.qty-count').forEach(button => {
+            button.addEventListener('click', function () {
+                const input = this.closest('.service-item').querySelector('.product-qty');
+                let currentValue = parseInt(input.value, 10) || 1;
+
+                if (this.dataset.action === "add") {
+                    input.value = currentValue + 1;
+                } else if (this.dataset.action === "minus" && currentValue > 1) {
+                    input.value = currentValue - 1;
+                }
+                updateTotalPrice();
+            });
+        });
+
+        // Cập nhật giá ngay từ đầu
+        updateTotalPrice();
+    });
+
+
+</script>
