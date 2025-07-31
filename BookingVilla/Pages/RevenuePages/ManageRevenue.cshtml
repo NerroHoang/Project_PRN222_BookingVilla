@@ -1,0 +1,231 @@
+﻿@page
+@model BookingVilla.Pages.RevenuePages.ManageRevenueModel
+@inject Microsoft.AspNetCore.Mvc.Rendering.IHtmlHelper HtmlHelper
+@{
+    Layout = null;
+    var currentPage = ViewContext.RouteData.Values["page"] as string;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Manage Villas</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700,200" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+
+    <!-- Bootstrap -->
+    <link href="~/css/bootstrap.min.css" rel="stylesheet" />
+
+    <!-- Custom Styles -->
+    <link href="~/css/light-bootstrap-dashboard.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/manager.css" />
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Scripts -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+
+    <style>
+        img { width: 200px; height: 120px; }
+        select { height: 25px; }
+
+        .sidebar .sidebar-wrapper {
+            background: #353535;
+        }
+
+        .btn-info.btn-fill {
+            background: #353535;
+            border: none;
+        }
+
+            .btn-info.btn-fill:hover {
+                background: gray;
+            }
+
+        .nav-item {
+            cursor: pointer;
+        }
+
+        .nav-left {
+            height: 100vh;
+            border-right: 1px solid #ddd;
+            text-align: center;
+        }
+
+            .nav-left select {
+                border: none;
+                background: transparent;
+                font-size: 2rem;
+                padding: 0.5rem;
+                box-sizing: border-box;
+                cursor: pointer;
+                outline: none;
+            }
+
+            .nav-left option {
+                padding: 0.5rem;
+                font-size: 2rem;
+            }
+
+
+        .chart-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .chart-wrapper {
+            max-width: 1500px;
+            width: 100%;
+        }
+
+        a {
+            color: black;
+        }
+
+        /*            .active{
+                                    background: bisque;
+                                }*/
+
+        .breadcrumb-option {
+            padding-top: 25px;
+        }
+
+        .breadcrumb__links a {
+            font-size: 15px;
+            font-weight: 500;
+            color: #111111;
+            margin-right: 18px;
+            display: inline-block;
+            position: relative;
+        }
+
+            .breadcrumb__links a:after {
+                position: absolute;
+                right: -14px;
+                top: 0;
+                content: "";
+                font-family: "FontAwesome";
+            }
+
+            .breadcrumb__links a i {
+                margin-right: 5px;
+                font-size: 20px;
+            }
+
+        .breadcrumb__links span {
+            font-size: 20px;
+            font-weight: 500;
+            color: #888888;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="sidebar" data-image="~/img/sidebar-5.jpg">
+            <div class="sidebar-wrapper" style="background-color: #353535">
+                <div class="logo">
+                    <a href="#" class="simple-text">Admin Dashboard</a>
+                </div>
+                <ul class="nav">
+                    <li class="nav-item @(currentPage == "/ManageVillaPages/ManageVilla" ? "active" : "")">
+                        <a class="nav-link" asp-page="/ManageVillaPages/ManageVilla">
+                            <i class="fa-solid fa-house"></i>
+                            <p>Manager Villa</p>
+                        </a>
+                    </li>
+                    <li class="nav-item @(currentPage == "/ManageAccountPages/ManageAccount" ? "active" : "")">
+                        <a class="nav-link" asp-page="/ManageAccountPages/ManageAccount">
+                            <i class="fa-solid fa-user"></i>
+                            <p>Manager Account</p>
+                        </a>
+                    </li>
+                    <li class="nav-item @(currentPage == "/ManageEmployeePages/ManageEmployee" ? "active" : "")">
+                        <a class="nav-link" asp-page="/ManageEmployeePages/ManageEmployee">
+                            <i class="fa-solid fa-users"></i>
+                            <p>Manager Employee</p>
+                        </a>
+                    </li>
+                    <li class="nav-item @(currentPage == "/ManageServicePages/ManageService" ? "active" : "")">
+                        <a class="nav-link" asp-page="/ManageServicePages/ManageService">
+                            <i class="fa-solid fa-address-book"></i>
+                            <p>Manager Service</p>
+                        </a>
+                    </li>
+                    <li class="nav-item @(currentPage == "/RevenuePages/ManageRevenue" ? "active" : "")">
+                        <a class="nav-link" asp-page="/RevenuePages/ManageRevenue">
+                            <i class="fa-solid fa-money-bill"></i>
+                            <p>View Revenue</p>
+                        </a>
+                    </li>
+                    <li class="nav-item active active-pro"><a class="nav-link active" asp-page="/Index"><i class="fa-solid fa-house"></i><p>Home Page</p></a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="main-panel">
+            <!-- Breadcrumb End -->
+            <div class="container-fluid">
+                <div class="row">
+                    <nav class="col-md-1 nav-left bg-light">
+                        <div class="navbar navbar-light">
+                            <a class="navbar-brand">Revenue</a>
+                        </div>
+                        <select class="flex-column" onchange="selectChange(this)" style="height: auto">
+                            @foreach (var year in Model.Years)
+                            {
+                                <option class="nav-item" data-year="@year" value="@year" selected="@(year == Model.YearChoosing ? "selected" : null)">
+                                    @year
+                                </option>
+                            }
+                        </select>
+
+                        <script>
+                            function selectChange(select) {
+                                const selectedYear = select.value;
+                                window.location.href = `/RevenuePages/ManageRevenue?year=${selectedYear}`;
+                            }
+                        </script>
+
+                    </nav>
+                    <main class="col-md-11 chart-container">
+                        <div class="chart-wrapper">
+                            <canvas id="booking-revenue"></canvas>
+                        </div>
+                    </main>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        var chart = document.getElementById("booking-revenue").getContext("2d");
+        var myChart = new Chart(chart, {
+            type: "bar",
+            data: {
+                labels: ["01","02","03","04","05","06","07","08","09","10","11","12",],
+                datasets: [{
+                    label: "Revenue",
+                    data: [@Model.Revenue.JanRevenue, @Model.Revenue.FebRevenue, @Model.Revenue.MarRevenue, @Model.Revenue.AprRevenue, @Model.Revenue.MayRevenue, @Model.Revenue.JuneRevenue, @Model.Revenue.JulyRevenue, @Model.Revenue.AugRevenue, @Model.Revenue.SepRevenue, @Model.Revenue.OctRevenue, @Model.Revenue.NovRevenue, @Model.Revenue.DecRevenue],
+                    backgroundColor: "rgba(0,156,255, .5)"
+                }]
+            },
+            options: { responsive: true }
+        });
+    </script>
+</body>
+</html>
+
