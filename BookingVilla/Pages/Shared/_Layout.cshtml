@@ -1,51 +1,231 @@
-﻿<!DOCTYPE html>
+﻿@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+
+@{
+    var userInfoJson = HttpContextAccessor.HttpContext?.Session.GetString("UserInfo");
+    dynamic userInfo = userInfoJson != null ? Newtonsoft.Json.JsonConvert.DeserializeObject(userInfoJson) : null;
+}
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
+    <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - BookingVilla</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/BookingVilla.styles.css" asp-append-version="true" />
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Taviraj:300,400,500,600,700,800,900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800&display=swap" rel="stylesheet" />
+
+    <!-- CSS Styles -->
+    <link rel="stylesheet" href="~/css/bootstrap.min.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/flaticon.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/linearicons.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/owl.carousel.min.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/jquery-ui.min.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/nice-select.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/magnific-popup.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/font-awesome.min.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/magnific-popup.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/style.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+          crossorigin="anonymous"
+          referrerpolicy="no-referrer" />
+    <style>
+        body {
+        font-family: Arial, sans-serif;
+        }
+
+        .inner-header .main-menu ul li a {
+        font-size: 20px;
+        }
+
+        .avatar-container img {
+        display: inline-block;
+        width: 68px;
+        height: 68px;
+        border-radius: 50%;
+        cursor: pointer;
+        }
+
+        .dropdownmenu {
+        display: none;
+        position: absolute;
+        background-color: #f9f9f9;
+        box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+        z-index: 1;
+        border-radius: 4px;
+        overflow: hidden;
+        margin-top: 8px; /* Space between avatar and dropdown */
+        }
+
+        .dropdownmenu a {
+        color: black;
+        padding: 12px 12px;
+        text-decoration: none;
+        display: block;
+        }
+
+        .dropdownmenu a:hover {
+        background-color: #f1f1f1;
+        }
+
+
+        .inner-header .main-menu ul li .drop-menu li a {
+        font-size: 16px;
+        white-space: nowrap;
+        }
+
+        .main-menu {
+        margin-left: 70px;
+        }
+        .drop-menu {
+        border-radius: 10px;
+        }
+
+    </style>
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container">
-                <a class="navbar-brand" asp-area="" asp-page="/Index">BookingVilla</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Privacy">Privacy</a>
-                        </li>
+    <!-- Header Section -->
+    <header class="header-section">
+        <div class="container-fluid">
+            <div class="inner-header">
+                <div class="logo">
+                    <a asp-page="/Index"><img class="logo-img" src="~/img/logo.png" alt="BookingVilla" /></a>
+                </div>
+                <div class="top-widget mt-4">
+                    <div class="top-info login">
+                        @if (userInfo == null)
+                        {
+                            <a href="#"><i class="fa-solid fa-right-to-bracket"></i></a>
+                            <a asp-page="/Auth/Login">Login</a>
+                        }
+                    </div>
+                    <div class="login">
+                        @if (userInfo != null)
+                        {
+                            <div class="avatar-container">
+                                <img src="@(userInfo.Avatar ?? "/img/Default_avatar_profile.jpg")" alt="Avatar" class="avatar" id="avatar" />
+                                <div class="dropdownmenu" id="dropdownmenu">
+                                    @if (userInfo.Role == "us")
+                                    {
+                                        <a asp-page="/ManageBookingPages/BookingHistory">Booking History</a>
+                                    }
+                                    <a asp-page="/Auth/Logout">Logout</a>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+                <nav class="main-menu">
+                    <ul>
+                        <li><a asp-page="/Index">Home</a></li>
+                        @if (userInfo != null)
+                        {
+                            @if (userInfo.Role != "emp")
+                            {
+                                <li><a asp-page="/ShowVilla">Villas</a></li>
+                            }
+                        }
+                        else
+                        {
+                            <li><a asp-page="/ShowVilla">Villas</a></li>
+                        }
+                        @if (userInfo != null)
+                        {
+                            @if (userInfo.Role == "emp")
+                            {
+                                <li class="dropdown">
+                                    <a asp-page="/ManageCancelBookingPages/ManageCancelBooking">Employee</a>
+                                </li>
+                            }
+                            else if (userInfo.Role == "ad")
+                            {
+                                <li class="dropdown">
+                                    <a asp-page="/ManageVillaPages/ManageVilla">Admin</a>
+                                </li>
+                            }
+                        }
+                        <li><a asp-page="/Service">Services</a></li>
+                        <li><a asp-page="/Contact">Contact</a></li>
                     </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    @RenderBody()
+    <!-- Footer Section -->
+    <footer class="footer-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3">
+                    <h5>Location</h5>
+                    <p>Khu Đô Thị FPT Đà Nẵng, P. Hòa Hải, Q. Ngũ Hành Sơn, TP Đà Nẵng</p>
+                </div>
+                <div class="col-lg-3">
+                    <h5>Reception</h5>
+                    <p>+(0236) 730 0999</p>
+                </div>
+                <div class="col-lg-3">
+                    <h5>Shuttle Service</h5>
+                    <p>+(0236) 730 0999</p>
+                </div>
+                <div class="col-lg-3">
+                    <h5>Restaurant</h5>
+                    <p>+(0236) 730 0999</p>
                 </div>
             </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
-
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - BookingVilla - <a asp-area="" asp-page="/Privacy">Privacy</a>
+            <div class="copyright-area">
+                <p>&copy; @DateTime.Now.Year BookingVilla. All rights reserved.</p>
+            </div>
         </div>
     </footer>
 
+    <!-- Scripts -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/main.js" asp-append-version="true"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
+<script src="js/jquery-3.3.1.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/jquery.magnific-popup.min.js"></script>
+<script src="js/jquery-ui.min.js"></script>
+<script src="js/jquery.nice-select.min.js"></script>
+<script src="js/jquery.slicknav.js"></script>
+<script src="js/owl.carousel.min.js"></script>
+<script src="js/main.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        //get current year
+        // let currentDate = new Date();
+        // let currentYear = currentDate.getFullYear();
+        // const revenue = document.querySelector(".revenue");
+        // revenue.href = "revenue?year=" + currentYear;
+
+        //-----------------------------------------
+        var avatar = document.getElementById("avatar");
+        var dropdownMenu = document.getElementById("dropdownmenu");
+        console.log(avatar);
+        avatar.addEventListener("click", function (event) {
+            console.log("hello");
+            // Toggle dropdown visibility
+            if (dropdownMenu.style.display === "block") {
+                dropdownMenu.style.display = "none";
+            } else {
+                // Position dropdown relative to the avatar
+                var rect = avatar.getBoundingClientRect();
+                dropdownMenu.style.top = rect.bottom + window.scrollY + "px";
+                dropdownMenu.style.right = "1px";
+                dropdownMenu.style.display = "block";
+            }
+            event.stopPropagation(); // Prevent the click event from propagating to window
+        });
+
+        window.addEventListener("click", function () {
+            dropdownMenu.style.display = "none";
+        });
+    });
+</script>
