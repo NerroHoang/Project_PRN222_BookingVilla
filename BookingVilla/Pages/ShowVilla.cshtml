@@ -1,0 +1,385 @@
+﻿@page
+@model ShowVillaModel
+@{
+    ViewData["Title"] = "Villas";
+}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<style>
+    /*---------------------Time Booking Bar----------------*/
+    .section {
+        position: relative;
+        height: 20vh;
+    }
+
+        .section .section-center {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            -webkit-transform: translateY(-50%);
+            transform: translateY(-50%);
+        }
+
+
+
+    .booking-form {
+        background: #fff;
+        -webkit-box-shadow: 0px 2px 5px -2px rgba(0, 0, 0, 0.3);
+        box-shadow: 0px 2px 5px -2px rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(60, 64, 101, 0.1);
+    }
+
+        .booking-form > form .row.no-margin {
+            margin-right: 0px;
+            margin-left: 0px;
+        }
+
+            .booking-form > form .row.no-margin > [class*="col-"] {
+                padding-right: 48px;
+                padding-left: 0px;
+            }
+
+        .booking-form .form-header {
+            padding: 15px 10px;
+            height: 110px;
+            line-height: 90px;
+            text-align: center;
+        }
+
+            .booking-form .form-header h2 {
+                font-family: 'Alegreya', serif;
+                margin: 0;
+                display: inline-block;
+                font-size: 42px;
+                color: #9a8067;
+            }
+
+        .booking-form .form-group {
+            position: relative;
+            height: 110px;
+            padding: 15px 10px;
+            margin-bottom: 0px;
+        }
+
+        .booking-form .form-control {
+            font-family: 'Alegreya', serif;
+            background-color: transparent;
+            border-radius: 0px;
+            border: none;
+            height: 50px;
+            -webkit-box-shadow: none;
+            box-shadow: none;
+            padding: 0;
+            font-size: 20px;
+            color: #3c404a;
+            font-weight: 700;
+        }
+
+        .booking-form select.form-control {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+
+            .booking-form select.form-control + .select-arrow {
+                position: absolute;
+                right: 0px;
+                bottom: 20px;
+                width: 32px;
+                line-height: 32px;
+                height: 32px;
+                text-align: center;
+                pointer-events: none;
+                color: #818390;
+                font-size: 12px;
+            }
+
+                .booking-form select.form-control + .select-arrow:after {
+                    content: '\279C';
+                    display: block;
+                    -webkit-transform: rotate(90deg);
+                    transform: rotate(90deg);
+                }
+
+        .booking-form .form-label {
+            color: #818390;
+            display: block;
+            font-weight: 400;
+            height: 30px;
+            line-height: 30px;
+            font-size: 14px;
+        }
+
+        .booking-form .form-btn {
+            padding: 15px 10px;
+            height: 110px;
+        }
+
+        .booking-form .submit-btn {
+            background: #9a8067;
+            color: #fff;
+            border: none;
+            font-weight: 400;
+            text-transform: uppercase;
+            font-size: 14px;
+            display: block;
+            height: 80px;
+            width: 100%;
+        }
+
+    .icon {
+        font-size: 50px;
+        font-style: normal;
+    }
+
+    .owl-prev::before {
+        content: "\f104"; /* Unicode của FontAwesome mũi tên trái */
+        font-family: "Font Awesome 6 Free";
+        font-weight: 900;
+    }
+
+    .owl-next::before {
+        content: "\f105"; /* Unicode của FontAwesome mũi tên phải */
+        font-family: "Font Awesome 6 Free";
+        font-weight: 900;
+    }
+
+    .owl-prev i,
+    .owl-next i {
+        display: none;
+    }
+
+    .room-section spad{
+        background-image: url("/wwwroot/img/background.jpg");
+    }
+</style>
+<!-- Hero Section -->
+<section class="hero-section set-bg" data-setbg="img/rooms-bg.jpg" style="width: 100%">
+    <div class="hero-text">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1>Villas</h1>
+                </div>
+            </div>
+            <div class="page-nav">
+                <a asp-page="/Index" class="left-nav"><i class="fa-solid fa-arrow-left"></i> Home</a>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Hero Section End -->
+<!-- Booking Form -->
+<div id="booking" class="section">
+    <div class="section-center">
+        <div class="container">
+            <div class="row">
+                <div class="booking-form">
+                    <form method="post">
+                        <div class="row no-margin">
+                            <div class="col-md-3">
+                                <div class="form-header">
+                                    <h2>Book Now</h2>
+                                </div>
+                            </div>
+                            <div class="col-md-7">
+                                <div class="row no-margin">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <span class="form-label">Check In</span>
+                                            <input name="FromDate" class="form-control date1" type="date" value="@Model.FromDate.ToString("yyyy-MM-dd")">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <span class="form-label">Check Out</span>
+                                            <input name="ToDate" class="form-control date2" type="date" value="@Model.ToDate.ToString("yyyy-MM-dd")">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <span class="form-label">Rooms</span>
+                                            <select name="AmountRoom" class="form-control">
+                                                @for (int i = 1; i <= 4; i++)
+                                                {
+                                                    <option value="@i" selected="@(Model.AmountRoom == i ? "selected" : null)">@i</option>
+                                                }
+                                            </select>
+                                            <span class="select-arrow"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <span class="form-label">People</span>
+                                            <select name="NumOfPeople" class="form-control">
+                                                @for (int i = 1; i <= 9; i++)
+                                                {
+                                                    <option value="@i" selected="@(Model.NumOfPeople == i ? "selected" : null)">@i</option>
+                                                }
+                                            </select>
+                                            <span class="select-arrow"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-btn">
+                                    <button class="submit-btn">Check availability</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Booking Form End -->
+
+<!-- Villas List -->
+<section class="room-section spad" style="background-image: url(/wwwroot/img/background.jpg)">
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <script>
+            Swal.fire({
+                title: "Booking Success!",
+                icon: "success",
+                confirmButtonText: "OK"
+            });
+        </script>
+    }
+    <div class="container">
+        @if (Model.ListVilla != null && Model.ListVilla.Any())
+        {
+            @foreach (var villa in Model.ListVilla)
+            {
+                <div class="rooms-page-item">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="room-pic-slider owl-carousel">
+                                @if (villa.ImageVillas != null && villa.ImageVillas.Any())
+                                {
+                                    @foreach (var image in villa.ImageVillas)
+                                    {
+                                        <div class="single-room-pic">
+                                            <img src="/img/Villa/@image.Image" alt="Villa Image" />
+                                        </div>
+                                    }
+                                }
+                                else
+                                {
+                                    <div class="single-room-pic">
+                                        <img src="/img/Villa/Executive_Suite_Ocean_View.jpg" alt="Default Villa Image" />
+                                    </div>
+                                }
+                            </div>
+
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="room-text">
+                                <div class="room-title">
+                                    <h2>@villa.Name</h2>
+                                    <div class="room-price">
+                                        <span style="left: -55px;">per day</span>
+                                        <h2 class="price-format">@Math.Round(villa.Price)</h2> 
+                                        <sub>VND</sub>
+                                    </div>
+                                </div>
+                                <div class="room-desc">
+                                    <p>@villa.Describe</p>
+                                </div>
+                                <div class="room-features">
+                                    <div class="room-info"><i class="fa-solid fa-tv"></i> <span>Smart TV</span></div>
+                                    <div class="room-info"><i class="fa-solid fa-wifi"></i> <span>High Wi-fi</span></div>
+                                    <div class="room-info"><i class="fa-solid fa-snowflake"></i> <span>AC</span></div>
+                                    <div class="room-info"><i class="fa-solid fa-car"></i> <span>Parking</span></div>
+                                    <div class="room-info last"><i class="fa-solid fa-water-ladder"></i> <span>Pool</span></div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-7"></div>
+                                    <a href="/ManageBookingPages/Booking?id=@villa.IdVilla&fromDate=@Model.FromDate&toDate=@Model.ToDate&numOfPeople=@Model.NumOfPeople" class="primary-btn col-lg-5">Book Now <i class="fa-solid fa-arrow-right"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <h3 style="text-align: center; color: red">There are no rooms available</h3>
+        }
+    </div>
+</section>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+<script>
+                 // Lấy thẻ h2 bằng class
+
+                    var prices = document.querySelectorAll(".price-format");
+                     console.log(prices.length);
+
+                    for (var i = 0; i < prices.length; i++) {
+
+                        // Chuyển giá trị của price thành số
+                        var number = parseFloat(prices[i].outerText);
+
+                        // Định dạng số với dấu chấm
+                        var formattedNumber = number.toLocaleString('de-DE');
+
+                        // Gán giá trị đã định dạng lại cho thẻ h2
+                        prices[i].innerText = formattedNumber;
+                        }
+                document.addEventListener('DOMContentLoaded', function () {
+                    // Lấy phần tử input date
+                    var dateInput = document.querySelector(".date1");
+
+                    // Tạo đối tượng ngày hiện tại
+                    var today = new Date();
+
+                    // Định dạng ngày dưới dạng yyyy-mm-dd
+                    var day = String(today.getDate()).padStart(2, '0');
+                    var month = String(today.getMonth() + 1).padStart(2, '0'); // Tháng bắt đầu từ 0
+                    var year = today.getFullYear();
+
+                    var currentDate = year + '-' + month + '-' + day;
+
+                    // Thiết lập giá trị min cho input date
+                    dateInput.setAttribute('min', currentDate);
+                });
+                window.onload = function () {
+                    const currentDateInput = document.querySelector(".date1");
+                    const nextDateInput = document.querySelector(".date2");
+                    currentDateInput.addEventListener('change', checkDates);
+                    nextDateInput.addEventListener('change', checkDates);
+
+
+
+
+                };
+                function checkDates() {
+                    const currentDateInput = document.querySelector(".date1");
+                    const nextDateInput = document.querySelector(".date2");
+
+                    const currentDate = new Date(currentDateInput.value);
+                    const nextDate = new Date(nextDateInput.value);
+
+
+                    if (currentDate >= nextDate) {
+                        nextDate.setDate(currentDate.getDate() + 2);
+                        nextDateInput.value = nextDate.toISOString().split('T')[0];
+                    }
+                }
+                const connection = new signalR.HubConnectionBuilder()
+        .withUrl("/newsHub")
+        .configureLogging(signalR.LogLevel.Information)
+        .build();
+
+    connection.start().catch(err => console.error(err.toString()));
+
+    connection.on("ReceiveNewVilla", function (message) {
+        alert("New update: " + message);
+        location.reload(); // Tải lại trang nếu cần
+    });
+</script>
